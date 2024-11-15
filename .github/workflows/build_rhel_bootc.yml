@@ -1,0 +1,79 @@
+name: Build RHEL bootc image with GHA
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'rhel/**'
+    branches:
+      - main
+
+jobs:
+  subs:
+    name: Build RHEL bootc image with repo access
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: rhel9-cicd-bootc
+      REGISTRY: ghcr.io/nzwulfin
+    container:
+      image: registry.access.redhat.com/ubi9/ubi
+      options: --privileged
+
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Get container tools in UBI builder
+        run: dnf -y install --disablerepo=* --enablerepo=ubi-9-appstream-rpms --enablerepo=ubi-9-baseos-rpms podman buildah skopeo
+
+      - name: Access a subscription via activation key
+        env:
+          SMDEV_CONTAINER_OFF: 1
+          orgid: ${{ secrets.RHT_ORGID }}
+          activation_key: ${{ secrets.RHT_ACT_KEY }}
+        run: subscription-manager register --org=$orgid --activationkey=$activation_key
+      
+      # workaround for https://github.com/redhat-actions/podman-login/issues/42 since the docker config from the host doesn't come up to the container
+      - name: Workaround open podman-login action issue
+        env:
+          auth: "{ \"auths\": {} }"
+        run: |
+          mkdir -p $HOME/.docker
+          echo $auth > $HOME/.docker/config.json
+      
+      - name: Log in to the RHT terms based registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: registry.redhat.io
+          username: ${{ secrets.RHT_REG_SVCUSER }}
+          password: ${{ secrets.RHT_REG_SVCPASS }}
+          auth_file_path: /run/containers/0/auth.json
+      
+      - name: Use buildah bud to create the image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: latest ${{ github.sha }}
+          containerfiles: |
+            ./rhel/Containerfile
+
+      - name: Log in to the GitHub Container registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          auth_file_path: /run/containers/0/auth.json
+
+      - name: Push to GitHub Container Repository
+        id: push-to-ghcr
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}
+
+      - name: Clean up the subscription
+        env:
+          SMDEV_CONTAINER_OFF: 1
+        run: subscription-manager unregister
