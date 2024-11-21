@@ -2,8 +2,6 @@ name: Build RHEL bootc image with GHA
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'rhel/**'
     branches:
       - main
 
@@ -17,13 +15,16 @@ jobs:
     container:
       image: registry.access.redhat.com/ubi9/ubi
       options: --privileged
+    permissions:
+      contents: write
+      packages: write
 
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
 
       - name: Get container tools in UBI builder
-        run: dnf -y install --disablerepo=* --enablerepo=ubi-9-appstream-rpms --enablerepo=ubi-9-baseos-rpms podman buildah skopeo
+        run: dnf -y install podman buildah skopeo
 
       - name: Access a subscription via activation key
         env:
@@ -55,7 +56,7 @@ jobs:
           image: ${{ env.IMAGE_NAME }}
           tags: latest ${{ github.sha }}
           containerfiles: |
-            ./rhel/Containerfile
+            Containerfile.httpd
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
