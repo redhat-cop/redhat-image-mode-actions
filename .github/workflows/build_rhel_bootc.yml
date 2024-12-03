@@ -10,7 +10,7 @@ jobs:
     name: Build RHEL bootc image with repo access
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: rhel9-cicd-bootc
+      IMAGE_NAME: ${{github.event.repository.name}}
       REGISTRY: ghcr.io/${{ github.actor }}
     container:
       image: registry.access.redhat.com/ubi9/ubi
