@@ -4,12 +4,15 @@ This repository is designed be used with the excercise in the redhat-cop/redhat-
 
 ## Workflow variables to be aware of
 In the `env` section of the job, the image name is set using the name of the repository. If you would like to use a different name, that can be changed by modifying the following variable:
+
 *IMAGE_NAME: ${{github.event.repository.name}}*
 
 The job is set to use the GitHub container registry as the user who triggered the action. You may need to adjust this to suit your situation. To use a different registry, update this variable and the associated log in step before the push step.
+
 *REGISTRY: ghcr.io/${{ github.actor }}*
 
 As examples, this template sets 3 tags on the image built: latest, the SHA of the commit associated with the workflow, and the tag used to trigger the workflow. Your use case may need different tags, these are set in the `build-image` step:
+
 *tags: latest ${{ github.sha }} ${{ github.ref_name }}*
 
 ## Accessing a subscription during build
