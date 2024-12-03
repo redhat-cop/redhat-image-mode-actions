@@ -2,16 +2,16 @@ name: Build RHEL bootc image with GHA
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
-  subs:
+  rhel-bootc-image-build:
     name: Build RHEL bootc image with repo access
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: rhel9-cicd-bootc
-      REGISTRY: ghcr.io/nzwulfin
+      REGISTRY: ghcr.io/${{ github.actor }}
     container:
       image: registry.access.redhat.com/ubi9/ubi
       options: --privileged
@@ -32,7 +32,7 @@ jobs:
           orgid: ${{ secrets.RHT_ORGID }}
           activation_key: ${{ secrets.RHT_ACT_KEY }}
         run: subscription-manager register --org=$orgid --activationkey=$activation_key
-      
+
       # workaround for https://github.com/redhat-actions/podman-login/issues/42 since the docker config from the host doesn't come up to the container
       - name: Workaround open podman-login action issue
         env:
@@ -40,7 +40,7 @@ jobs:
         run: |
           mkdir -p $HOME/.docker
           echo $auth > $HOME/.docker/config.json
-      
+
       - name: Log in to the RHT terms based registry
         uses: redhat-actions/podman-login@v1
         with:
@@ -48,13 +48,13 @@ jobs:
           username: ${{ secrets.RHT_REG_SVCUSER }}
           password: ${{ secrets.RHT_REG_SVCPASS }}
           auth_file_path: /run/containers/0/auth.json
-      
+
       - name: Use buildah bud to create the image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: latest ${{ github.sha }}
+          tags: latest ${{ github.sha }} ${{ github.ref_name }}
           containerfiles: |
             Containerfile.httpd
 
