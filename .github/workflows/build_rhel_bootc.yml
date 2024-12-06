@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{github.event.repository.name}}
-      REGISTRY: ghcr.io/${{ github.actor }}
+      PUSHREGISTRY: ghcr.io/${{ github.actor }}
+      TAGLIST: latest ${{ github.sha }} ${{ github.ref_name }}
+      CONTAINERFILE: Containerfile.httpd
     container:
       image: registry.access.redhat.com/ubi9/ubi
       options: --privileged
@@ -54,14 +56,13 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: latest ${{ github.sha }} ${{ github.ref_name }}
-          containerfiles: |
-            Containerfile.httpd
+          tags: ${{ env.TAGLIST }}
+          containerfiles: ${{ env.CONTAINERFILE }}
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.PUSHREGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           auth_file_path: /run/containers/0/auth.json
@@ -72,7 +73,7 @@ jobs:
         with:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.PUSHREGISTRY }}
 
       - name: Clean up the subscription
         env:
