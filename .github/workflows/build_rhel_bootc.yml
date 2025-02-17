@@ -76,6 +76,7 @@ jobs:
           registry: ${{ env.PUSHREGISTRY }}
 
       - name: Clean up the subscription
+        if: always()
         env:
           SMDEV_CONTAINER_OFF: 1
         run: subscription-manager unregister
