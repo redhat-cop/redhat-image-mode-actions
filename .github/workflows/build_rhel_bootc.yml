@@ -13,7 +13,7 @@ jobs:
       IMAGE_NAME: ${{github.event.repository.name}}
       PUSHREGISTRY: ghcr.io/${{ github.actor }}
       TAGLIST: latest ${{ github.sha }} ${{ github.ref_name }}
-      CONTAINERFILE: Containerfile.httpd
+      CONTAINERFILE: Containerfile
     container:
       image: registry.access.redhat.com/ubi9/ubi
       options: --privileged
