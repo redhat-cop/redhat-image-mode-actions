@@ -16,11 +16,9 @@ RUN <<EORUN
 set -xeuo pipefail
 
 #configure web server and relocate the webroot to be read-only and managed by this container image
+dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
 dnf -y install httpd && dnf clean all
-systemctl enable httpd
-mv /var/www /usr/share/www
-sed -ie 's,/var/www,/usr/share/www,' /etc/httpd/conf/httpd.conf
-echo "Welcome to the bootc-http instance!" > /usr/share/www/html/index.html
+
 
 EORUN
 
