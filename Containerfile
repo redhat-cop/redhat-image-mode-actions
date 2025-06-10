@@ -23,6 +23,7 @@ hostnamectl set-hostname aap-aio.local
 #Get AAP bundle installer WIP
 #wget bundle
 #tar -xzvf bundlename
+COPY inventory.txt ~/inventory.txt
 
 #Install AAP
 ansible-playbook -i inventory.txt ansible.containerized_installer.install
