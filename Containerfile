@@ -20,7 +20,12 @@ dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms
 dnf install -y ansible-core wget git rsync
 hostnamectl set-hostname aap-aio.local
 
-EORUN
+#Get AAP bundle installer WIP
+#wget bundle
+#tar -xzvf bundlename
+
+#Install AAP
+ansible-playbook -i inventory.txt ansible.containerized_installer.install
 
 #clean up caches in the image and lint the container
 RUN rm /var/{cache,lib}/* -rf
