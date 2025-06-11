@@ -28,6 +28,8 @@ COPY inventory.txt ~/inventory.txt
 #Install AAP
 ansible-playbook -i inventory.txt ansible.containerized_installer.install
 
+EORUN
+
 #clean up caches in the image and lint the container
 RUN rm /var/{cache,lib}/* -rf
 RUN bootc container lint
