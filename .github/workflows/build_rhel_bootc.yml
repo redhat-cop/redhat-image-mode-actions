@@ -76,6 +76,9 @@ jobs:
           image: ${{ env.DEST_IMAGE }}
           tags: ${{ env.TAGLIST }}
           containerfiles: ${{ env.CONTAINERFILE }}
+          secrets: "${{ secrets.tarball }}"
+        env:
+          tarball: "${{ secrets.tarball }}"
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
