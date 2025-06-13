@@ -19,16 +19,14 @@ set -xeuo pipefail
 dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
 dnf install -y ansible-core wget git rsync
 hostnamectl set-hostname aap-aio.local
-
+EORUN
 #Get AAP bundle installer WIP
-wget "${{ secrets.SOURCE_REGISTRY_USER }}"
-tar -xzvf ansible-automation-platform-containerized-setup-bundle-2.5-15.1-aarch64.tar.gz
-cp inventory.txt ~/inventory.txt
+RUN wget "${{ secrets.SOURCE_REGISTRY_USER }}"
+RUN tar -xzvf ansible-automation-platform-containerized-setup-bundle-2.5-15.1-aarch64.tar.gz
+RUN cp inventory.txt ~/inventory.txt
 
 #Install AAP
-ansible-playbook -i inventory.txt ansible.containerized_installer.install
-
-EORUN
+RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
 
 #clean up caches in the image and lint the container
 RUN rm /var/{cache,lib}/dnf /var/lib/rhsm /var/cache/ldconfig -rf
