@@ -1,6 +1,6 @@
 MAINTAINER Alessandro Rossi <al.rossi87@gmail.com>
 
-FROM registry.redhat.io/rhel9/rhel-bootc:9.5
+FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
 #install software
 RUN dnf -y install tmux mkpasswd
@@ -25,7 +25,7 @@ echo "Welcome to the bootc-http instance!" > /usr/share/www/html/index.html
 EORUN
 
 #clean up caches in the image and lint the container
-RUN rm /var/{cache,lib}/* -rf
+RUN rm /var/{cache,lib}/dnf /var/lib/rhsm /var/cache/ldconfig -rf
 RUN bootc container lint
 
 EXPOSE 80
