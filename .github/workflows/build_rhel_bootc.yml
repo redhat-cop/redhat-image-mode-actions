@@ -1,8 +1,8 @@
 name: Build RHEL bootc image with GHA
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 jobs:
   rhel-bootc-image-build:
