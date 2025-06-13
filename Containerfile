@@ -2,8 +2,11 @@ MAINTAINER chadmf
 
 FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
+ENV tarball=${tarball}
+
 #install software
-RUN dnf -y install tmux mkpasswd
+RUN dnf -y install tmux mkpasswd wget
+RUN wget $tarball
 
 #configure bootc-user
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 redhat) && useradd -m -G wheel bootc-user -p $pass
