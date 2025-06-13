@@ -1,6 +1,6 @@
 MAINTAINER chadmf
 
-FROM registry.redhat.io/rhel9/rhel-bootc:9.5
+FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
 #install software
 RUN dnf -y install tmux mkpasswd
@@ -21,17 +21,17 @@ dnf install -y ansible-core wget git rsync
 hostnamectl set-hostname aap-aio.local
 
 #Get AAP bundle installer WIP
-RUN wget "${{ secrets.SOURCE_REGISTRY_USER }}"
-RUN tar -xzvf ansible-automation-platform-containerized-setup-bundle-2.5-15.1-aarch64.tar.gz
-COPY inventory.txt ~/inventory.txt
+wget "${{ secrets.SOURCE_REGISTRY_USER }}"
+tar -xzvf ansible-automation-platform-containerized-setup-bundle-2.5-15.1-aarch64.tar.gz
+cp inventory.txt ~/inventory.txt
 
 #Install AAP
-RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
+ansible-playbook -i inventory.txt ansible.containerized_installer.install
 
 EORUN
 
 #clean up caches in the image and lint the container
-RUN rm /var/{cache,lib}/* -rf
+RUN rm /var/{cache,lib}/dnf /var/lib/rhsm /var/cache/ldconfig -rf
 RUN bootc container lint
 
-EXPOSE 80
+EXPOSE 8443
