@@ -29,8 +29,8 @@ aap-aio.local ansible_connection=local
 # Common variables
 # https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
 # -----------------------------------------------------
-registry_username=xxxxxxxxxx
-registry_password=xxxxxxxxxx
+registry_username="${{ secrets.SOURCE_REGISTRY_USER }}"
+registry_password="${{ secrets.SOURCE_REGISTRY_PASSWORD }}"
 
 #ca_tls_cert=~/certs/myCA.pem
 #ca_tls_key=~/certs/myCA.key
