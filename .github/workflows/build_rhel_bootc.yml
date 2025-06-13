@@ -11,6 +11,7 @@ jobs:
     env:
       # Disable Subscription Manager container passthrough
       SMDEV_CONTAINER_OFF: 1
+      tarball: "${{ secrets.tarball }}"
       # Subscription Manager credentials - uses repository secrets
       # RHT_ORGID: "${{ secrets.RHT_ORGID }}"
       # RHT_ACT_KEY: "${{ secrets.RHT_ACT_KEY }}"
@@ -76,9 +77,6 @@ jobs:
           image: ${{ env.DEST_IMAGE }}
           tags: ${{ env.TAGLIST }}
           containerfiles: ${{ env.CONTAINERFILE }}
-          secrets: "${{ secrets.tarball }}"
-        env:
-          tarball: "${{ secrets.tarball }}"
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
