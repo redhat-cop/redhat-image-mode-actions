@@ -18,9 +18,10 @@ set -xeuo pipefail
 #configure web server and relocate the webroot to be read-only and managed by this container image
 dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
 dnf install -y ansible-core wget git rsync
-hostnamectl set-hostname aap-aio.local
 EORUN
+
 #Get AAP bundle installer WIP
+RUN hostnamectl set-hostname aap-aio.local
 RUN wget "${{ secrets.SOURCE_REGISTRY_USER }}"
 RUN tar -xzvf ansible-automation-platform-containerized-setup-bundle-2.5-15.1-aarch64.tar.gz
 RUN cp inventory.txt ~/inventory.txt
