@@ -12,13 +12,11 @@ RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 redhat) && useradd -m -G whee
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
 
 #Using the optional heredoc format to help simplify the number of times we call RUN
-RUN <<EORUN
-set -xeuo pipefail
+
 
 #configure web server and relocate the webroot to be read-only and managed by this container image
-dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
-dnf install -y ansible-core wget git rsync
-EORUN
+RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
+RUN dnf install -y ansible-core wget git rsync
 
 #Get AAP bundle installer WIP
 RUN hostnamectl set-hostname aap-aio.local
