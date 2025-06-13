@@ -1,6 +1,5 @@
 name: Build RHEL bootc image with GHA
 on:
-  workflow_dispatch:
   push:
     tags:
       - '*'
