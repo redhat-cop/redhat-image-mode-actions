@@ -1,0 +1,107 @@
+# This section is for your AAP Gateway host(s)
+# -----------------------------------------------------
+[automationgateway]
+aap-aio.local ansible_connection=local
+
+# This section is for your AAP Controller host(s)
+# -----------------------------------------------------
+[automationcontroller]
+aap-aio.local ansible_connection=local
+# This section is for your AAP Execution host(s)
+# -----------------------------------------------------
+#[execution_nodes]
+
+# This section is for your AAP Automation Hub host(s)
+# -----------------------------------------------------
+[automationhub]
+aap-aio.local ansible_connection=local
+
+# This section is for your AAP EDA Controller host(s)
+# -----------------------------------------------------
+[automationeda]
+aap-aio.local ansible_connection=local
+
+[database]
+aap-aio.local ansible_connection=local
+
+[all:vars]
+
+# Common variables
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
+# -----------------------------------------------------
+registry_username=xxxxxxxxxx
+registry_password=xxxxxxxxxx
+
+#ca_tls_cert=~/certs/myCA.pem
+#ca_tls_key=~/certs/myCA.key
+postgresql_admin_username=postgres
+postgresql_admin_password=redhat
+#postgresql_tls_cert=~/certs/myCA.keyame.crt
+#postgresql_tls_key=~/certs/myCA.keyame.key
+
+redis_mode=standalone
+# AAP Gateway
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-gateway-variables
+# -----------------------------------------------------
+gateway_admin_password="redhat"
+gateway_pg_host=aap-aio.local
+gateway_pg_database=aapgateway
+#gateway_pg_username=postgres
+gateway_pg_password=redhat
+#gateway_tls_cert=~/certs/myCA.keyame.crt
+#gateway_tls_key=~/certs/myCA.keyame.key
+# AAP Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-controller-variables
+# -----------------------------------------------------
+controller_admin_password="redhat"
+controller_pg_host=aap-aio.local
+controller_pg_database=aapcontroller
+#controller_pg_username=postgres
+controller_pg_password=redhat
+#controller_tls_cert=~/certs/myCA.keyame.crt
+#controller_tls_key=~/certs/myCA.keyame.key
+#
+# postinstall content seeding optional feature
+# set to true to enable feature
+#controller_postinstall=true
+#hub_postinstall=true
+# where the content will be git cloned to and used for postinstall, dir must exist first!
+#controller_postinstall_dir=/home/pgriffit/aap/postinstall
+#hub_postinstall_dir=/home/pgriffit/aap/postinstall
+# this is the SoT for the content configuration files
+#controller_postinstall_repo_url=https://github.com/ffirg/aap-cac
+#hub_postinstall_repo_url=https://github.com/ffirg/aap-cac
+# this is the git branch to pull from
+#controller_postinstall_repo_ref=2.5
+#hub_postinstall_repo_ref=2.5
+# this is for automating the install of my AAP subscription so I can just login and use the platform immediately
+controller_license_file=/home/pgriffit/aap/aap-manifest.zip
+
+# AAP Automation Hub
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-hub-variables
+# -----------------------------------------------------
+hub_admin_password="redhat"
+hub_pg_host=aap-aio.local
+hub_pg_database=aaphub
+#hub_pg_username=postgres
+hub_pg_password=redhat
+#hub_tls_cert=~/certs/myCA.keyame.crt
+#hub_tls_key=~/certs/myCA.keyame.key
+
+# AAP EDA Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#event-driven-ansible-controller
+# -----------------------------------------------------
+eda_admin_password="redhat"
+eda_pg_host=aap-aio.local
+eda_pg_database=aapeda
+#eda_pg_username=postgres
+eda_pg_password=redhat
+#eda_tls_cert=~/certs/myCA.keyame.crt
+#eda_tls_key=~/certs/myCA.keyame.key
+
+#setup_monitoring=true
+
+#hub_container_signing=true
+#hub_container_signing_key = /home/pgriffit/aap/ansible-automation-platform-containerized-setup-2.5-2/hub-signing-key.priv
+#hub_container_signing_pass=redhat
+#hub_container_signing_service_script = /home/pgriffit/aap/ansible-automation-platform-containerized-setup-2.5-2/hub-signing.sh
