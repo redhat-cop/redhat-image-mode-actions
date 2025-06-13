@@ -1,6 +1,6 @@
 MAINTAINER chadmf
 
-FROM registry.redhat.io/rhel9/rhel-bootc:9.5
+FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
 #install software
 RUN dnf -y install tmux mkpasswd
@@ -31,7 +31,7 @@ ansible-playbook -i inventory.txt ansible.containerized_installer.install
 EORUN
 
 #clean up caches in the image and lint the container
-RUN rm /var/{cache,lib}/* -rf
+RUN rm /var/{cache,lib}/dnf /var/lib/rhsm /var/cache/ldconfig -rf
 RUN bootc container lint
 
 EXPOSE 8443
