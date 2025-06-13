@@ -21,12 +21,12 @@ dnf install -y ansible-core wget git rsync
 hostnamectl set-hostname aap-aio.local
 
 #Get AAP bundle installer WIP
-#wget bundle
-#tar -xzvf bundlename
+RUN wget "${{ secrets.SOURCE_REGISTRY_USER }}"
+RUN tar -xzvf ansible-automation-platform-containerized-setup-bundle-2.5-15.1-aarch64.tar.gz
 COPY inventory.txt ~/inventory.txt
 
 #Install AAP
-ansible-playbook -i inventory.txt ansible.containerized_installer.install
+RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
 
 EORUN
 
