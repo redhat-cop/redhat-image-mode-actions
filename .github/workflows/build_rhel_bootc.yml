@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get container tools in UBI builder
-        run: dnf -y install podman buildah skopeo
+        run: dnf -y install podman buildah skopeo wget
       
       - name: Get tarball
         run: wget ${{ secrets.tarball }}
