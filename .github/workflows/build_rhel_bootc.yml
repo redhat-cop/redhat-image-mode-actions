@@ -11,7 +11,6 @@ jobs:
     env:
       # Disable Subscription Manager container passthrough
       SMDEV_CONTAINER_OFF: 1
-      tarball: "${{ secrets.tarball }}"
       # Subscription Manager credentials - uses repository secrets
       # RHT_ORGID: "${{ secrets.RHT_ORGID }}"
       # RHT_ACT_KEY: "${{ secrets.RHT_ACT_KEY }}"
@@ -36,6 +35,9 @@ jobs:
       # Destination credentials - uses platform variables and secrets
       # DEST_REGISTRY_USER: "${{ github.actor }}"
       # DEST_REGISTRY_PASSWORD: "${{ secrets.GITHUB_TOKEN }}"
+       
+      #Set variable for tarball download
+      tarball: "${{ secrets.tarball }}"
 
     container:
       image: registry.access.redhat.com/ubi9/ubi
@@ -50,6 +52,9 @@ jobs:
 
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo
+      
+      - name: Get tarball
+        run: wget ${{ secrets.tarball }}
 
       - name: Access a subscription via activation key
         run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
