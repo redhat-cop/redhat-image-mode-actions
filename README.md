@@ -1,5 +1,5 @@
-# redhat-image-mode-actions
-## Template repo for Github Actions based builds of bootc images. 
+# redhat-image-mode-aap
+## fork of Template repo for Github Actions based builds of bootc images to create an all in one AAP
 This repository is designed be used with the exercise in the redhat-cop/redhat-image-mode-demo repository. This template provides a sample Containerfile and workflow as a starting point for use in your own account. The workflow can be triggered in two ways, by creating a tag or manually. A manual trigger will set one of the tags to the branch name which may overwrite older manual builds.  For more information on the workflow design, refer to the exercise.
 
 ## Workflow variables to be aware of
