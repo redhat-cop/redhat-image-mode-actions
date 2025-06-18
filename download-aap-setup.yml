@@ -10,8 +10,8 @@
     aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle.tar.gz"
     
     # Registry credentials for inventory update
-    registry_username:  "${{ secrets.SOURCE_REGISTRY_USER }}"
-    registry_password: "${{ secrets.SOURCE_REGISTRY_PASSWORD }}"
+    registry_username:  "${{ REGISTRY_USER }}"
+    registry_password: "${{ REGISTRY_PASSWORD }}"
 
   tasks:
     - name: Validate required environment variables
