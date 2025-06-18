@@ -5,13 +5,13 @@
   gather_facts: false
   vars:
     # AAP setup download configuration
-    aap_setup_download_url: "{{ ansible_env.AAP_BUNDLE_URL | default('') }}"
-    aap_setup_dest_directory: "./"
+    aap_setup_download_url: "https://access.redhat.com/downloads/content/480/ver=2.5/rhel---9/2.5-15.1/x86_64/ansible-automation-platform-containerized-setup-bundle-2.5-15.1-x86_64.tar.gz?user=<USER_ID>&_auth_=<AUTH_TOKEN>"
+    aap_setup_dest_directory: "/opt/aap-setup"
     aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle.tar.gz"
     
     # Registry credentials for inventory update
-    registry_username: "{{ ansible_env.REGISTRY_USER | default('') }}"
-    registry_password: "{{ ansible_env.REGISTRY_PASSWORD | default('') }}"
+    registry_username:  "${{ secrets.SOURCE_REGISTRY_USER }}"
+    registry_password: "${{ secrets.SOURCE_REGISTRY_PASSWORD }}"
 
   tasks:
     - name: Validate required environment variables
