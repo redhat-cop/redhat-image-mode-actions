@@ -2,7 +2,12 @@ name: Build RHEL bootc image with GHA
 on:
   push:
     branches:
-      - *
+      - '*'           # All branches
+      - '**'          # All branches including those with slashes (feature/branch-name)
+  pull_request:       # Also run on pull requests for testing
+    branches:
+      - '*'
+  workflow_dispatch:   # Allow manual triggering
 
 jobs:
   rhel-bootc-image-build:
