@@ -1,0 +1,85 @@
+---
+- name: Install Ansible Automation Platform in bootc container
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    aap_installer_dir: /opt/aap-installer
+    aap_inventory_file: "{{ aap_installer_dir }}/inventory.txt"
+    
+  pre_tasks:
+    - name: Display system information
+      ansible.builtin.debug:
+        msg:
+          - "Hostname: {{ ansible_hostname }}"
+          - "OS Family: {{ ansible_os_family }}"
+          - "Architecture: {{ ansible_architecture }}"
+          - "Total Memory: {{ ansible_memtotal_mb }}MB"
+          
+    - name: Ensure hostname is properly set
+      ansible.builtin.hostname:
+        name: aap-aio.local
+        use: systemd
+      
+    - name: Verify AAP installer bundle is extracted
+      ansible.builtin.stat:
+        path: "{{ aap_installer_dir }}/ansible.containerized_installer.install"
+      register: installer_playbook
+      failed_when: not installer_playbook.stat.exists
+      
+    - name: Verify inventory file exists
+      ansible.builtin.stat:
+        path: "{{ aap_inventory_file }}"
+      register: inventory_file
+      failed_when: not inventory_file.stat.exists
+
+  tasks:
+    - name: Display AAP installation directory contents
+      ansible.builtin.find:
+        paths: "{{ aap_installer_dir }}"
+        patterns: "*.yml,*.yaml"
+      register: installer_files
+      
+    - name: Show available installer files
+      ansible.builtin.debug:
+        msg: "Available installer files: {{ installer_files.files | map(attribute='path') | list }}"
+        
+    - name: Check if containerized installer collection is available
+      ansible.builtin.stat:
+        path: "{{ aap_installer_dir }}/ansible_collections"
+      register: collections_dir
+      
+    - name: Install AAP using containerized installer
+      ansible.builtin.command:
+        cmd: ansible-playbook -i inventory.txt ansible.containerized_installer.install -v
+        chdir: "{{ aap_installer_dir }}"
+      register: aap_install_result
+      environment:
+        ANSIBLE_HOST_KEY_CHECKING: "False"
+        ANSIBLE_STDOUT_CALLBACK: "yaml"
+      
+    - name: Display installation results
+      ansible.builtin.debug:
+        msg:
+          - "AAP Installation completed"
+          - "Return code: {{ aap_install_result.rc }}"
+          - "Installation took: {{ aap_install_result.delta if aap_install_result.delta is defined else 'unknown' }} seconds"
+      when: aap_install_result.rc == 0
+      
+    - name: Display installation errors if failed
+      ansible.builtin.debug:
+        msg:
+          - "AAP Installation failed"
+          - "Return code: {{ aap_install_result.rc }}"
+          - "Error output: {{ aap_install_result.stderr }}"
+      when: aap_install_result.rc != 0
+      
+    - name: Fail if installation was unsuccessful
+      ansible.builtin.fail:
+        msg: "AAP installation failed with return code {{ aap_install_result.rc }}"
+      when: aap_install_result.rc != 0
+
+  post_tasks:
+    - name: Display final status
+      ansible.builtin.debug:
+        msg: "Ansible Automation Platform installation completed successfully in bootc container" 

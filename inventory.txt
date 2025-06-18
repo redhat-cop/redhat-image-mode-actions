@@ -29,8 +29,8 @@ aap-aio.local ansible_connection=local
 # Common variables
 # https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
 # -----------------------------------------------------
-registry_username="${{ secrets.SOURCE_REGISTRY_USER }}"
-registry_password="${{ secrets.SOURCE_REGISTRY_PASSWORD }}"
+registry_username=myusername
+registry_password=mypassword
 
 #ca_tls_cert=~/certs/myCA.pem
 #ca_tls_key=~/certs/myCA.key
@@ -66,8 +66,8 @@ controller_pg_password=redhat
 #controller_postinstall=true
 #hub_postinstall=true
 # where the content will be git cloned to and used for postinstall, dir must exist first!
-#controller_postinstall_dir=/home/pgriffit/aap/postinstall
-#hub_postinstall_dir=/home/pgriffit/aap/postinstall
+#controller_postinstall_dir=
+#hub_postinstall_dir=
 # this is the SoT for the content configuration files
 #controller_postinstall_repo_url=https://github.com/ffirg/aap-cac
 #hub_postinstall_repo_url=https://github.com/ffirg/aap-cac
@@ -75,7 +75,7 @@ controller_pg_password=redhat
 #controller_postinstall_repo_ref=2.5
 #hub_postinstall_repo_ref=2.5
 # this is for automating the install of my AAP subscription so I can just login and use the platform immediately
-controller_license_file=/home/pgriffit/aap/aap-manifest.zip
+#controller_license_file=
 
 # AAP Automation Hub
 # https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-hub-variables
@@ -102,6 +102,6 @@ eda_pg_password=redhat
 #setup_monitoring=true
 
 #hub_container_signing=true
-#hub_container_signing_key = /home/pgriffit/aap/ansible-automation-platform-containerized-setup-2.5-2/hub-signing-key.priv
+#hub_container_signing_key = 
 #hub_container_signing_pass=redhat
-#hub_container_signing_service_script = /home/pgriffit/aap/ansible-automation-platform-containerized-setup-2.5-2/hub-signing.sh
+#hub_container_signing_service_script =

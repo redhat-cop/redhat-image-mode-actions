@@ -1,0 +1,59 @@
+---
+- name: Download AAP Setup Bundle using Red Hat COP utilities
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    # AAP setup download configuration
+    aap_setup_download_url: "{{ ansible_env.AAP_BUNDLE_URL | default('') }}"
+    aap_setup_dest_directory: "./"
+    aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle.tar.gz"
+    
+    # Registry credentials for inventory update
+    registry_username: "{{ ansible_env.REGISTRY_USER | default('') }}"
+    registry_password: "{{ ansible_env.REGISTRY_PASSWORD | default('') }}"
+
+  tasks:
+    - name: Validate required environment variables
+      ansible.builtin.assert:
+        that:
+          - aap_setup_download_url != ""
+          - registry_username != ""
+          - registry_password != ""
+        fail_msg: "Required environment variables (AAP_BUNDLE_URL, REGISTRY_USER, REGISTRY_PASSWORD) are missing"
+        
+    - name: Download AAP setup bundle
+      ansible.builtin.get_url:
+        url: "{{ aap_setup_download_url }}"
+        dest: "{{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
+        mode: '0644'
+        timeout: 900
+        force: true
+      register: download_result
+      
+    - name: Verify AAP bundle download
+      ansible.builtin.stat:
+        path: "{{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
+      register: bundle_stat
+      
+    - name: Display download results
+      ansible.builtin.debug:
+        msg:
+          - "AAP bundle downloaded successfully: {{ bundle_stat.stat.exists }}"
+          - "File size: {{ (bundle_stat.stat.size / 1024 / 1024) | round(2) if bundle_stat.stat.exists else 'N/A' }} MB"
+          - "Download location: {{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
+          
+    - name: Update inventory file with registry credentials
+      ansible.builtin.lineinfile:
+        path: "./inventory.txt"
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+      loop:
+        - { key: "registry_username", value: "{{ registry_username }}" }
+        - { key: "registry_password", value: "{{ registry_password }}" }
+      register: inventory_update
+      
+    - name: Verify inventory updates
+      ansible.builtin.debug:
+        msg: "Inventory file updated with registry credentials"
+      when: inventory_update is changed 

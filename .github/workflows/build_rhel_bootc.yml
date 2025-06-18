@@ -52,9 +52,29 @@ jobs:
 
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo wget
-      
-      - name: Get tarball
-        run: wget ${{ secrets.tarball }}
+
+      - name: Install Ansible for build process
+        run: dnf -y install ansible-core
+
+      - name: Install Red Hat COP AAP utilities collection
+        run: |
+          ansible-galaxy collection install infra.ansible
+          ansible-galaxy collection install git+https://github.com/redhat-cop/aap_utilities.git
+
+      - name: Download AAP setup bundle using Red Hat COP utilities
+        env:
+          AAP_BUNDLE_URL: ${{ secrets.tarball }}
+          REGISTRY_USER: ${{ secrets.SOURCE_REGISTRY_USER }}
+          REGISTRY_PASSWORD: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
+        run: ansible-playbook download-aap-setup.yml
+        
+      - name: Verify AAP bundle and inventory preparation
+        run: |
+          echo "=== Verifying AAP bundle download ==="
+          ls -lh ansible-automation-platform-containerized-setup-bundle.tar.gz
+          echo ""
+          echo "=== Verifying inventory registry settings ==="
+          grep "registry_" inventory.txt
 
       - name: Access a subscription via activation key
         run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
