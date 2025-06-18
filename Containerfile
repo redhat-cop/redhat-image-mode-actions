@@ -30,7 +30,7 @@ WORKDIR /opt/aap-installer
 COPY inventory.txt .
 
 # Copy and extract the AAP installer bundle from build context
-COPY ansible-automation-platform-containerized-setup-bundle-*.tar.gz ./
+COPY /root/.ansible/tmp/ansible-automation-platform-containerized-setup-bundle-*.tar.gz .
 RUN tar -xzf ansible-automation-platform-containerized-setup-bundle-*.tar.gz --strip-components=1
 
 #Install AAP
@@ -38,6 +38,7 @@ RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
 
 #clean up caches in the image and lint the container
 RUN rm /var/{cache,lib}/dnf /var/lib/rhsm /var/cache/ldconfig -rf
+RUN rm /opt/aap-installer/ansible-automation-platform-containerized-setup-bundle-*.tar.gz
 RUN bootc container lint
 
 EXPOSE 8443
