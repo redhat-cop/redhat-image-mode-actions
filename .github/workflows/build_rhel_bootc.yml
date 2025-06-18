@@ -65,6 +65,10 @@ jobs:
           ansible-galaxy collection install git+https://github.com/redhat-cop/aap_utilities.git
 
       - name: Download AAP setup bundle using Red Hat COP utilities
+        env:
+          aap_setup_download_url: "${{ secrets.TARBALL }}"
+          aap_setup_dest_directory: "${{ github.workspace }}"
+          aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
         run: ansible-playbook download-aap-setup.yml
         
       - name: Verify AAP bundle and inventory preparation
