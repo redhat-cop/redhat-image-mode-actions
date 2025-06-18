@@ -55,10 +55,7 @@ jobs:
 #       run: subscription-manager list --available
 
       - name: Get container tools in UBI builder
-        run: dnf -y install podman buildah skopeo wget
-
-      - name: Install Ansible for build process
-        run: dnf -y install ansible-core
+        run: dnf -y install podman buildah skopeo wget ansible-core
 
       - name: Install Red Hat COP AAP utilities collection
         run: |
@@ -69,7 +66,7 @@ jobs:
           aap_setup_download_url: "${{ secrets.TARBALL }}"
           aap_setup_dest_directory: "${{ github.workspace }}"
           aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
-        run: ansible-playbook download-aap-setup.yml
+        run: ansible-playbook download-aap-setup.yml -e "aap_setup_download_url=${{ secrets.TARBALL }}" -e "aap_setup_dest_directory=${{ github.workspace }}" -e "aap_setup_bundle_name=ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
         
       - name: Verify AAP bundle and inventory preparation
         run: |
