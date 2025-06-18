@@ -30,7 +30,7 @@ WORKDIR /opt/aap-installer
 COPY inventory.txt .
 
 # Copy and extract the AAP installer bundle from build context
-COPY /root/.ansible/tmp/ansible-automation-platform-containerized-setup-bundle-*.tar.gz .
+COPY  /home/runner/work/redhat-image-mode-aap/redhat-image-mode-aap/tmp/ansible-automation-platform-containerized-setup-bundle-*.tar.gz .
 RUN tar -xzf ansible-automation-platform-containerized-setup-bundle-*.tar.gz --strip-components=1
 
 #Install AAP
