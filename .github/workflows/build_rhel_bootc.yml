@@ -64,7 +64,7 @@ jobs:
       - name: Download AAP setup bundle using Red Hat COP utilities
         env:
           aap_setup_download_url: "${{ secrets.TARBALL }}"
-          aap_setup_dest_directory: "${{ github.workspace }}"
+          aap_setup_dest_directory: "/home/runner/work/redhat-image-mode-aap/"
           aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
         run: ansible-playbook download-aap-setup.yml -e "aap_setup_download_url=${{ secrets.TARBALL }}" -e "aap_setup_dest_directory=${{ github.workspace }}" -e "aap_setup_bundle_name=ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
         
