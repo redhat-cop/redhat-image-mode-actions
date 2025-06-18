@@ -35,9 +35,7 @@ jobs:
       # Destination credentials - uses platform variables and secrets
       # DEST_REGISTRY_USER: "${{ github.actor }}"
       # DEST_REGISTRY_PASSWORD: "${{ secrets.GITHUB_TOKEN }}"
-       
-      #Set variable for tarball download
-      tarball: "${{ secrets.tarball }}"
+
 
     container:
       image: registry.access.redhat.com/ubi9/ubi
@@ -69,10 +67,13 @@ jobs:
       - name: Download AAP setup bundle using Red Hat COP utilities
         env:
           AAP_BUNDLE_URL: ${{ secrets.tarball }}
-          REGISTRY_USER: ${{ secrets.SOURCE_REGISTRY_USER }}
-          REGISTRY_PASSWORD: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
+          registry_username: ${{ secrets.SOURCE_REGISTRY_USER }}
+          registry_password: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
           RHT_ORGID: ${{ secrets.RHT_ORGID }}
           RHT_ACT_KEY: ${{ secrets.RHT_ACT_KEY }}
+          aap_setup_download_url: "https://access.redhat.com/downloads/content/480/ver=2.5/rhel---9/2.5-15.1/x86_64/ansible-automation-platform-containerized-setup-bundle-2.5-15.1-x86_64.tar.gz?user=<USER_ID>&_auth_=<AUTH_TOKEN>"
+          aap_setup_dest_directory: "/opt/aap-setup"
+          aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle.tar.gz"
         run: ansible-playbook download-aap-setup.yml
         
       - name: Verify AAP bundle and inventory preparation
