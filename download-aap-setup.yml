@@ -5,6 +5,7 @@
   gather_facts: false
   vars:
     aap_setup_download_url: "https://developers.redhat.com/content-gateway/file/ansible/Ansible_Automation_Platform_2.5/ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
+    aap_setup_dest_directory: "/tmp"
     aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
 
   tasks:
@@ -17,6 +18,7 @@
     - name: Download AAP setup bundle
       ansible.builtin.get_url:
         url: "{{ aap_setup_download_url }}"
+        dest: "{{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
         mode: '0644'
         timeout: 900
         force: true
@@ -24,7 +26,7 @@
       
     - name: Verify AAP bundle download
       ansible.builtin.stat:
-        path: "{{ aap_setup_bundle_name }}"
+        path: "{{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
       register: bundle_stat
       
     - name: Display download results
