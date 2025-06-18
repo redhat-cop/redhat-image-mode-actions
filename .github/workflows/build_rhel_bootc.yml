@@ -50,6 +50,12 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v4
 
+      - name: Access a subscription via activation key
+        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
+
+      - name: List available subscriptions
+        run: subscription-manager list --available
+
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo wget
 
@@ -66,6 +72,8 @@ jobs:
           AAP_BUNDLE_URL: ${{ secrets.tarball }}
           REGISTRY_USER: ${{ secrets.SOURCE_REGISTRY_USER }}
           REGISTRY_PASSWORD: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
+          RHT_ORGID: ${{ secrets.RHT_ORGID }}
+          RHT_ACT_KEY: ${{ secrets.RHT_ACT_KEY }}
         run: ansible-playbook download-aap-setup.yml
         
       - name: Verify AAP bundle and inventory preparation
@@ -75,9 +83,6 @@ jobs:
           echo ""
           echo "=== Verifying inventory registry settings ==="
           grep "registry_" inventory.txt
-
-      - name: Access a subscription via activation key
-        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
 
       # workaround for https://github.com/redhat-actions/podman-login/issues/42 since the docker config from the host doesn't come up to the container
       - name: Workaround open podman-login action issue
