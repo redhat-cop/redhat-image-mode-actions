@@ -30,8 +30,8 @@ WORKDIR /opt/aap-installer
 COPY inventory.txt .
 
 # Copy and extract the AAP installer bundle from build context
-COPY ansible-automation-platform-containerized-setup-bundle.tar.gz ./
-RUN tar -xzf ansible-automation-platform-containerized-setup-bundle-*.tar.gz --strip-components=1
+COPY ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz ./
+RUN tar -xzf ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz --strip-components=1
 
 #Install AAP
 RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
