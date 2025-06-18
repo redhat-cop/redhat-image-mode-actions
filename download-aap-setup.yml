@@ -3,6 +3,10 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars:
+    aap_setup_download_url: "https://developers.redhat.com/content-gateway/file/ansible/Ansible_Automation_Platform_2.5/ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
+    aap_setup_dest_directory: "/opt/aap-setup"
+    aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
 
   tasks:
     - name: Validate required environment variables
