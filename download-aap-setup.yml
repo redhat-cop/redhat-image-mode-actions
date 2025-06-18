@@ -9,9 +9,7 @@
       ansible.builtin.assert:
         that:
           - aap_setup_download_url != ""
-          - registry_username != ""
-          - registry_password != ""
-        fail_msg: "Required environment variables (AAP_BUNDLE_URL, REGISTRY_USER, REGISTRY_PASSWORD) are missing"
+        fail_msg: "Required environment variables AAP_BUNDLE_URL is missing"
         
     - name: Download AAP setup bundle
       ansible.builtin.get_url:
@@ -34,17 +32,3 @@
           - "File size: {{ (bundle_stat.stat.size / 1024 / 1024) | round(2) if bundle_stat.stat.exists else 'N/A' }} MB"
           - "Download location: {{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
           
-    - name: Update inventory file with registry credentials
-      ansible.builtin.lineinfile:
-        path: "./inventory.txt"
-        regexp: "^{{ item.key }}="
-        line: "{{ item.key }}={{ item.value }}"
-      loop:
-        - { key: "registry_username", value: "{{ registry_username }}" }
-        - { key: "registry_password", value: "{{ registry_password }}" }
-      register: inventory_update
-      
-    - name: Verify inventory updates
-      ansible.builtin.debug:
-        msg: "Inventory file updated with registry credentials"
-      when: inventory_update is changed 

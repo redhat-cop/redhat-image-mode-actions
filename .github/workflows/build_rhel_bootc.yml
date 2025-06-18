@@ -66,11 +66,6 @@ jobs:
 
       - name: Download AAP setup bundle using Red Hat COP utilities
         env:
-          AAP_BUNDLE_URL: ${{ secrets.tarball }}
-          registry_username: ${{ secrets.SOURCE_REGISTRY_USER }}
-          registry_password: ${{ secrets.SOURCE_REGISTRY_PASSWORD }}
-          RHT_ORGID: ${{ secrets.RHT_ORGID }}
-          RHT_ACT_KEY: ${{ secrets.RHT_ACT_KEY }}
           aap_setup_download_url: "https://developers.redhat.com/content-gateway/file/ansible/Ansible_Automation_Platform_2.5/ansible-automation-platform-containerized-setup-bundle-2.5-10.1-x86_64.tar.gz"
           aap_setup_dest_directory: "/opt/aap-setup"
           aap_setup_bundle_name: "ansible-automation-platform-containerized-setup-bundle.tar.gz"
