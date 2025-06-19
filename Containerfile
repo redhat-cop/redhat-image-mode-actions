@@ -58,10 +58,8 @@ USER ansible
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz --strip-components=1
 
 # Install AAP with proper environment and options
-RUN ANSIBLE_HOST_KEY_CHECKING=False \
-    ANSIBLE_FORCE_COLOR=true \
-    ansible-playbook -i inventory.txt ansible.containerized_installer.install -v \
-    --timeout=3600 \
+RUN ANSIBLE_FORCE_COLOR=true \
+    ansible-playbook -i inventory.txt ansible.containerized_installer.install 
 
 # Switch back to root for cleanup and final steps
 USER root
