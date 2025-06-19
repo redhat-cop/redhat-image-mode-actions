@@ -8,10 +8,14 @@ FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 RUN dnf -y install tmux mkpasswd wget
 
 #configure ansible user
-RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 redhat) && useradd -m -G wheel ansible -p $pass
+RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 ${ANSIBLE_USER_PASS}) && useradd -m -G wheel ansible -p $pass
 
 #setup sudo to not require password
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
+
+# Verify sudo configuration works
+RUN su - ansible -c "sudo -n whoami" && echo "✅ NOPASSWD sudo working" || echo "❌ NOPASSWD sudo failed"
+RUN su - ansible -c "sudo -n id" && echo "✅ sudo privileges confirmed"
 
 #configure dnf and install packages
 RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
@@ -39,9 +43,7 @@ USER ansible
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz --strip-components=1
 
 # Install AAP as non-root (this is the recommended approach)
-RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install \
-    --become-method=sudo \
-    --ask-become-pass=false
+RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install 
 
 # Switch back to root for cleanup and final steps
 USER root
