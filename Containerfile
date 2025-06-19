@@ -5,24 +5,13 @@ LABEL version="2.5"
 FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
 #install software
-RUN dnf -y install tmux mkpasswd wget
+RUN dnf -y install tmux mkpasswd wget sudo
 
 #configure ansible user
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 ${ANSIBLE_USER_PASS}) && useradd -m -G wheel ansible -p $pass
 
 #setup sudo to not require password and fix PAM issues for containers
-RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo && \
-    echo "ansible ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ansible && \
-    chmod 440 /etc/sudoers.d/wheel-sudo /etc/sudoers.d/ansible
-
-# Fix PAM configuration for containers
-RUN sed -i 's/^session.*pam_loginuid.so/#&/' /etc/pam.d/sudo && \
-    sed -i 's/^session.*pam_keyinit.so/#&/' /etc/pam.d/sudo && \
-    echo "session optional pam_keyinit.so revoke" >> /etc/pam.d/sudo
-
-# Alternative: Disable requiretty and set pam session requirements
-RUN echo "Defaults:ansible !requiretty" >> /etc/sudoers && \
-    echo "Defaults:ansible !pam_session" >> /etc/sudoers
+RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo 
 
 #configure dnf and install packages
 RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
