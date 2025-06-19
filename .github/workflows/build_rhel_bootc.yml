@@ -88,6 +88,8 @@ jobs:
           image: ${{ env.DEST_IMAGE }}
           tags: ${{ env.TAGLIST }}
           containerfiles: ${{ env.CONTAINERFILE }}
+          build-args: |
+            ANSIBLE_USER_PASS=${{ secrets.ANSIBLE_USER_PASS }}
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
