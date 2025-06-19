@@ -115,3 +115,5 @@ eda_pg_password=redhat
 #hub_container_signing_key = 
 #hub_container_signing_pass=redhat
 #hub_container_signing_service_script =
+
+ignore_preflight_errors: true
