@@ -19,16 +19,16 @@ RUN dnf install -y ansible-core wget git rsync
 RUN echo "127.0.0.1 aap-aio.local" >> /etc/hosts
 
 # Create working directory for AAP installation with proper ownership
-RUN mkdir -p /opt/aap-installer && chown -R ansible-user:ansible-user /opt/aap-installer
+RUN mkdir -p /opt/aap-installer && chown -R ansible:ansible /opt/aap-installer
 WORKDIR /opt/aap-installer
 
 # Copy inventory file first and set ownership
 COPY inventory.txt .
-RUN chown ansible-user:ansible-user inventory.txt
+RUN chown ansible:ansible inventory.txt
 
 # Copy and extract the AAP installer bundle from build context
 COPY ansible-automation-platform-containerized-setup-2.5-15.tar.gz ./
-RUN chown ansible-user:ansible-user ansible-automation-platform-containerized-setup-2.5-15.tar.gz
+RUN chown ansible:ansible ansible-automation-platform-containerized-setup-2.5-15.tar.gz
 
 # Switch to non-root user for AAP installation
 USER ansible
