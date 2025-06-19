@@ -2,18 +2,14 @@ MAINTAINER chadmf
 
 FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
-ENV tarball=${tarball}
-
 #install software
 RUN dnf -y install tmux mkpasswd wget
 
 #configure ansible user
-RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 redhat) && useradd -m -G wheel ansible-user -p $pass
+RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 redhat) && useradd -m -G wheel ansible -p $pass
 
 #setup sudo to not require password
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
-
-
 
 #configure dnf and install packages
 RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
@@ -35,13 +31,13 @@ COPY ansible-automation-platform-containerized-setup-2.5-15.tar.gz ./
 RUN chown ansible-user:ansible-user ansible-automation-platform-containerized-setup-2.5-15.tar.gz
 
 # Switch to non-root user for AAP installation
-USER ansible-user
+USER ansible
 
 # Extract and install AAP as non-root user
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz --strip-components=1
 
 # Install AAP as non-root (this is the recommended approach)
-RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
+RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install -v
 
 # Switch back to root for cleanup and final steps
 USER root
@@ -52,6 +48,6 @@ RUN rm /opt/aap-installer/ansible-automation-platform-containerized-setup-bundle
 RUN bootc container lint
 
 # Set final user for runtime
-USER ansible-user
+USER ansible
 
 EXPOSE 443

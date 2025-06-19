@@ -1,0 +1,57 @@
+# Use LABEL instead of deprecated MAINTAINER
+LABEL maintainer="chadmf"
+LABEL description="Red Hat Ansible Automation Platform on RHEL bootc"
+LABEL version="2.5"
+
+FROM registry.redhat.io/rhel9/rhel-bootc:9.6
+
+# Environment variables
+ENV tarball=${tarball}
+
+# Install software and configure repositories in single layer for efficiency
+RUN dnf -y install tmux mkpasswd wget && \
+    dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms && \
+    dnf install -y ansible-core git rsync && \
+    dnf clean all
+
+# Configure ansible user with proper security
+RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 redhat) && \
+    useradd -m -G wheel ansible-user -p $pass && \
+    echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
+
+# Configure hostname resolution
+RUN echo "127.0.0.1 aap-aio.local" >> /etc/hosts
+
+# Create working directory with proper ownership
+RUN mkdir -p /opt/aap-installer && \
+    chown -R ansible-user:ansible-user /opt/aap-installer
+WORKDIR /opt/aap-installer
+
+# Copy files with proper ownership (using --chown for efficiency)
+COPY --chown=ansible-user:ansible-user inventory.txt .
+COPY --chown=ansible-user:ansible-user ansible-automation-platform-*.tar.gz ./
+
+# Switch to non-root user for AAP installation
+USER ansible-user
+
+# Extract and install AAP as non-root user (recommended approach)
+RUN tar -xzf ansible-automation-platform-*.tar.gz --strip-components=1 && \
+    ansible-playbook -i inventory.txt ansible.containerized_installer.install
+
+# Switch back to root for cleanup operations
+USER root
+
+# Clean up caches and temporary files in single layer
+RUN rm -rf /var/cache/dnf /var/lib/dnf /var/lib/rhsm /var/cache/ldconfig && \
+    rm -f /opt/aap-installer/ansible-automation-platform-*.tar.gz && \
+    bootc container lint
+
+# Set final user for runtime security
+USER ansible-user
+
+# Expose AAP services
+EXPOSE 443
+
+# Add health check for AAP services
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:443/api/v2/ping/ || exit 1 
