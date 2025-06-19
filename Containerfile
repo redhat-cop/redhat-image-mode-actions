@@ -24,12 +24,6 @@ RUN sed -i 's/^session.*pam_loginuid.so/#&/' /etc/pam.d/sudo && \
 RUN echo "Defaults:ansible !requiretty" >> /etc/sudoers && \
     echo "Defaults:ansible !pam_session" >> /etc/sudoers
 
-# Verify sudo configuration works
-RUN echo "Testing sudo configuration..." && \
-    su - ansible -c "sudo -n whoami" && echo "✅ NOPASSWD sudo working" || \
-    (echo "❌ Standard sudo failed, trying alternative..." && \
-     su - ansible -c "sudo --non-interactive whoami" && echo "✅ Alternative sudo working")
-
 #configure dnf and install packages
 RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
 RUN dnf install -y ansible-core wget git rsync
@@ -61,9 +55,9 @@ RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install
 # Switch back to root for cleanup and final steps
 USER root
 
-#clean up caches in the image and lint the container
+#clean up caches and install directory in the image and lint the container
 RUN rm /var/{cache,lib}/dnf /var/lib/rhsm /var/cache/ldconfig -rf
-RUN rm /opt/aap-installer/ansible-automation-platform-containerized-setup-bundle-*.tar.gz
+RUN rm -f /opt/aap-installer
 RUN bootc container lint
 
 # Set final user for runtime
