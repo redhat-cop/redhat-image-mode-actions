@@ -34,6 +34,7 @@ aap-aio.local ansible_connection=local
 ansible_become=false
 ansible_become_method=sudo
 ansible_connection=local
+ansible_become_user=root
 
 # Use the ansible user for all operations
 ansible_user=ansible
