@@ -4,18 +4,15 @@ LABEL version="2.5"
 
 FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
-#install software
-RUN dnf -y install tmux mkpasswd wget sudo
+#configure dnf and install packages
+RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
+RUN dnf install -y ansible-core wget git rsync tmux mkpasswd wget sudo
 
 #configure ansible user
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 ${ANSIBLE_USER_PASS}) && useradd -m -G wheel ansible -p $pass
 
 #setup sudo to not require password and fix PAM issues for containers
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo 
-
-#configure dnf and install packages
-RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
-RUN dnf install -y ansible-core wget git rsync
 
 #RUN hostnamectl set-hostname aap-aio.local
 RUN echo "127.0.0.1 aap-aio.local" >> /etc/hosts
