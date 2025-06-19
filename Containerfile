@@ -1,4 +1,6 @@
-MAINTAINER chadmf
+LABEL maintainer="chadmf"
+LABEL description="Red Hat Ansible Automation Platform on RHEL bootc"
+LABEL version="2.5"
 
 FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
@@ -37,7 +39,9 @@ USER ansible
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz --strip-components=1
 
 # Install AAP as non-root (this is the recommended approach)
-RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install -v
+RUN ansible-playbook -i inventory.txt ansible.containerized_installer.install \
+    --become-method=sudo \
+    --ask-become-pass=false
 
 # Switch back to root for cleanup and final steps
 USER root
