@@ -6,7 +6,7 @@ FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
 #configure dnf and install packages
 RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
-RUN dnf install -y ansible-core wget git rsync tmux mkpasswd wget sudo
+RUN dnf install -y ansible-core wget git rsync tmux mkpasswd wget sudo crun podman slirp4netns fuse-overlayfs
 
 #configure ansible user
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 ${ANSIBLE_USER_PASS}) && useradd -m -G wheel ansible -p $pass
