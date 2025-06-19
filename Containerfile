@@ -62,7 +62,6 @@ RUN ANSIBLE_HOST_KEY_CHECKING=False \
     ANSIBLE_FORCE_COLOR=true \
     ansible-playbook -i inventory.txt ansible.containerized_installer.install -v \
     --timeout=3600 \
-    --extra-vars="ansible_become=true ansible_become_method=sudo ansible_become_user=root"
 
 # Switch back to root for cleanup and final steps
 USER root
