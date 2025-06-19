@@ -29,6 +29,16 @@ aap-aio.local ansible_connection=local
 # Common variables
 # https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
 # -----------------------------------------------------
+
+# Disable privilege escalation for rootless installation
+ansible_become=false
+ansible_become_method=sudo
+ansible_become_user=root
+
+# Use the ansible-user for all operations
+ansible_user=ansible
+ansible_ssh_user=ansible
+
 registry_username=myusername
 registry_password=mypassword
 
