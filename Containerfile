@@ -30,12 +30,6 @@ RUN echo "Defaults:ansible !requiretty" >> /etc/sudoers && \
     echo "Defaults:ansible !pam_session" >> /etc/sudoers && \
     echo "Defaults:ansible !use_pty" >> /etc/sudoers
 
-# Verify sudo configuration works
-RUN echo "Testing sudo configuration..." && \
-    su - ansible -c "sudo -n whoami" && echo "✅ NOPASSWD sudo working" || \
-    (echo "❌ Standard sudo failed, trying alternative..." && \
-     su - ansible -c "sudo --non-interactive whoami" && echo "✅ Alternative sudo working")
-
 #RUN hostnamectl set-hostname aap-aio.local
 RUN echo "127.0.0.1 aap-aio.local" >> /etc/hosts
 
