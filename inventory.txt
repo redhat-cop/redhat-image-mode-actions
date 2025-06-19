@@ -31,7 +31,7 @@ aap-aio.local ansible_connection=local
 # -----------------------------------------------------
 
 # Disable privilege escalation for rootless installation
-ansible_become=true
+ansible_become=false
 ansible_become_method=sudo
 ansible_connection=local
 
