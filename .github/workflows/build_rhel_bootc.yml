@@ -41,10 +41,9 @@ jobs:
       # DEST_REGISTRY_USER: "${{ github.actor }}"
       # DEST_REGISTRY_PASSWORD: "${{ secrets.GITHUB_TOKEN }}"
 
-
     container:
       image: registry.access.redhat.com/ubi9/ubi
-#      options: --privileged
+      options: --privileged
     permissions:
       contents: write
       packages: write
@@ -56,11 +55,8 @@ jobs:
       - name: Access a subscription via activation key
         run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
 
-#      - name: List available subscriptions
-#       run: subscription-manager list --available
-
       - name: Get container tools in UBI builder
-        run: dnf -y install podman buildah skopeo wget ansible-core tree
+        run: dnf -y install podman buildah skopeo wget ansible-core 
 
       - name: Install Red Hat COP AAP utilities collection
         run: |
