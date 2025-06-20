@@ -107,6 +107,3 @@ jobs:
           tags: ${{ steps.build-image.outputs.tags }}
           registry: ${{ env.DEST_REGISTRY_HOST }}
 
-      - name: Clean up the subscription
-        if: always()
-        run: subscription-manager unregister
