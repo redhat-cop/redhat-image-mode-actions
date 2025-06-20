@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Access a subscription via activation key
-        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }} && cat /var/log/rhsm/rhsm.log
+        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }} --debug
 
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo wget ansible-core 
