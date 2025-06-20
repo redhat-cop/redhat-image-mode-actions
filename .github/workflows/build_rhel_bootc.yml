@@ -52,8 +52,8 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v4
 
-      - name: Access a subscription via activation key
-        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
+#      - name: Access a subscription via activation key
+#        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }}
 
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo wget ansible-core 
@@ -107,3 +107,6 @@ jobs:
           tags: ${{ steps.build-image.outputs.tags }}
           registry: ${{ env.DEST_REGISTRY_HOST }}
 
+      - name: Clean up the subscription
+        if: always()
+        run: subscription-manager unregister
