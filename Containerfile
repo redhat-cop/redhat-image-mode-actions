@@ -6,7 +6,7 @@ FROM registry.redhat.io/rhel9/rhel-bootc:9.6
 
 #configure dnf and install packages
 RUN dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
-RUN dnf install -y ansible-core wget git rsync tmux mkpasswd wget sudo crun podman slirp4netns fuse-overlayfs
+RUN dnf install -y ansible-core wget git rsync tmux mkpasswd wget sudo crun podman slirp4netns fuse-overlayfs tree
 
 #configure ansible user
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 ${ANSIBLE_USER_PASS}) && useradd -m -G wheel ansible -p $pass
@@ -50,7 +50,7 @@ USER ansible
 
 # Extract and install AAP as non-root user
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz 
-RUN ls -la
+RUN tree .
 RUN sed -i '58,62s/^/# /' ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
 
 # Install AAP with proper environment and options
