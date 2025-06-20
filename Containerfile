@@ -50,12 +50,11 @@ USER ansible
 
 # Extract and install AAP as non-root user
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz 
-RUN ls -la /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
 RUN sed -i '58,62s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
-RUN cat /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
+
 # Install AAP with proper environment and options
 RUN ANSIBLE_FORCE_COLOR=true \
-    ansible-playbook -i inventory.txt ansible.containerized_installer.install 
+    ansible-playbook -i inventory.txt ansible-automation-platform-containerized-setup-2.5-15/ansible.containerized_installer.install 
 
 # Switch back to root for cleanup and final steps
 USER root
