@@ -50,6 +50,7 @@ USER ansible
 
 # Extract and install AAP as non-root user
 RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz --strip-components=1
+RUN sed -i '58,62s/^/# /' ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
 
 # Install AAP with proper environment and options
 RUN ANSIBLE_FORCE_COLOR=true \
