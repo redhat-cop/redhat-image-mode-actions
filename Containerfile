@@ -42,20 +42,20 @@ COPY inventory.txt .
 RUN chown ansible:ansible inventory.txt
 
 # Copy and extract the AAP installer bundle from build context
-COPY ansible-automation-platform-containerized-setup-2.5-15.tar.gz ./
-RUN chown ansible:ansible ansible-automation-platform-containerized-setup-2.5-15.tar.gz
+COPY ansible-automation-platform-containerized-setup-2.5-16.tar.gz ./
+RUN chown ansible:ansible ansible-automation-platform-containerized-setup-2.5-16.tar.gz
 
 # Switch to non-root user for AAP installation
 USER ansible
 
 # Extract and install AAP as non-root user
-RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-15.tar.gz 
-RUN sed -i '58,62s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
-RUN sed -i '104,115s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
-RUN sed -i '20,40s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/collections/ansible_collections/ansible/containerized_installer/playbooks/install.yml
+RUN tar -xzf ansible-automation-platform-containerized-setup-2.5-16.tar.gz 
+RUN sed -i '58,62s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-16/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
+RUN sed -i '104,115s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-16/collections/ansible_collections/ansible/containerized_installer/roles/common/tasks/main.yml
+RUN sed -i '20,40s/^/# /' /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-16/collections/ansible_collections/ansible/containerized_installer/playbooks/install.yml
 
-RUN mv inventory.txt /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15/inventory.txt
-WORKDIR /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-15
+RUN mv inventory.txt /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-16/inventory.txt
+WORKDIR /opt/aap-installer/ansible-automation-platform-containerized-setup-2.5-16
 
 # Install AAP with proper environment and options
 RUN ANSIBLE_FORCE_COLOR=true \
