@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Access a subscription via activation key
-        run: subscription-manager register --org=${{ env.RHT_ORGID }} --activationkey=${{ env.RHT_ACT_KEY }} 
+        run: subscription-manager register --org=${{ env.RHT_ORGID }} --activationkey=${{ env.SOURCE_REGISTRY_PASSWORD }} 
 
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo wget ansible-core 
@@ -64,7 +64,7 @@ jobs:
           ansible-galaxy collection install git+https://github.com/redhat-cop/aap_utilities.git,9f682d5774ce4e6ee1133246c447bb933ec5c218
 
       - name: Download AAP setup bundle using Red Hat COP utilities
-        run: ansible-playbook download-aap-setup.yml -e "RHT_ACT_KEY="${{ secrets.RHT_ACT_KEY }}" -e "aap_setup_dest_directory=/__w/redhat-image-mode-aap/redhat-image-mode-aap" -e "aap_setup_bundle_name=ansible-automation-platform-containerized-setup-2.5-16.tar.gz"
+        run: ansible-playbook download-aap-setup.yml -e "RHT_ACT_KEY="${{ secrets.RHT_ACT_KEY }}" -e "aap_setup_dest_directory=/__w/redhat-image-mode-aap/redhat-image-mode-aap"
 
       # workaround for https://github.com/redhat-actions/podman-login/issues/42 since the docker config from the host doesn't come up to the container
       - name: Workaround open podman-login action issue
