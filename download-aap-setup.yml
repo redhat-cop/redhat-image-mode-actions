@@ -3,32 +3,41 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  
+  vars:
+    containerized_installer_version: "2.5"
+    containerized_installer_user: 'aap'
+    containerized_installer_user_home: '/var/lib/{{ containerized_installer_user }}'
+    containerized_installer_cleanup: true
+    containerized_installer_dest_dir: "{{ containerized_installer_user_home }}"
+
   tasks:
-    - name: Validate required environment variables
-      ansible.builtin.assert:
-        that:
-          - aap_setup_download_url != ""
-        fail_msg: "Required environment variables AAP_BUNDLE_URL is missing"
-        
-    - name: Download AAP setup bundle
-      ansible.builtin.get_url:
-        url: "{{ aap_setup_download_url }}"
-        dest: "{{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
-        mode: '0644'
-        timeout: 900
-        force: true
-      register: download_result
-      
-    - name: Verify AAP bundle download
-      ansible.builtin.stat:
-        path: "{{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
-      register: bundle_stat
-      
-    - name: Display download results
-      ansible.builtin.debug:
-        msg:
-          - "AAP bundle downloaded successfully: {{ bundle_stat.stat.exists }}"
-          - "File size: {{ (bundle_stat.stat.size / 1024 / 1024) | round(2) if bundle_stat.stat.exists else 'N/A' }} MB"
-          - "Download location: {{ aap_setup_dest_directory }}/{{ aap_setup_bundle_name }}"
-          
+    - name: Download containerized installer
+      ansible.builtin.include_role:
+        name: infra.aap_utilities.aap_setup_download
+      vars:
+        aap_setup_down_offline_token: "{{ RHT_ACT_KEY }}"
+        aap_setup_down_version: "{{ containerized_installer_version }}"
+        aap_setup_down_type: containerized-setup
+        aap_setup_down_dest_dir: "{{ containerized_installer_user_home }}"
+        aap_setup_containerized: true
+
+    - name: Extract containerized installer
+      ansible.builtin.unarchive:
+        src: "{{ aap_setup_down_installer_file }}"
+        dest: "{{ containerized_installer_user_home }}"
+        owner: "{{ containerized_installer_user }}"
+        group: "{{ containerized_installer_user }}"
+        remote_src: true
+
+    - name: Determine install directory
+      ansible.builtin.find:
+        paths: "{{ containerized_installer_user_home }}"
+        file_type: directory
+        use_regex: true
+        patterns:
+          - 'ansible-automation-platform-containerized-setup'
+      register: aap_directories
+
+    - name: Set directory fact
+      ansible.builtin.set_fact:
+        aap_installer_dir: "{{ (aap_directories.files | sort(attribute='mtime', reverse=true) | first).path }}"

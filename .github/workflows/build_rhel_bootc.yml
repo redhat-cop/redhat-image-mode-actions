@@ -25,11 +25,7 @@ jobs:
       # Source credentials - uses repository secrets
       SOURCE_REGISTRY_USER: "${{ secrets.SOURCE_REGISTRY_USER }}"
       SOURCE_REGISTRY_PASSWORD: "${{ secrets.SOURCE_REGISTRY_PASSWORD }}"
-      containerized_installer_user: 'aap'
-      containerized_installer_user_home: '/var/lib/{{ containerized_installer_user }}'
-      containerized_installer_cleanup: true
-      containerized_installer_version: "2.5"
-      containerized_installer_dest_dir: "{{ containerized_installer_user_home }}"
+
 
       # Containerfile to build
       CONTAINERFILE: Containerfile
@@ -58,28 +54,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Access a subscription via activation key
-        run: subscription-manager register --org=${{ secrets.RHT_ORGID }} --activationkey=${{ secrets.RHT_ACT_KEY }} 
+        run: subscription-manager register --org=${{ env.RHT_ORGID }} --activationkey=${{ env.RHT_ACT_KEY }} 
 
       - name: Get container tools in UBI builder
         run: dnf -y install podman buildah skopeo wget ansible-core 
 
-      - name: Download containerized installer
-        ansible.builtin.include_role:
-          name: infra.aap_utilities.aap_setup_download
-        vars:
-          aap_setup_down_offline_token: "{{ RHT_ACT_KEY }}"
-          aap_setup_down_version: "{{ containerized_installer_version }}"
-          aap_setup_down_type: containerized-setup
-          aap_setup_down_dest_dir: "{{ containerized_installer_user_home }}"
-          aap_setup_containerized: true
-  
-      - name: Extract containerized installer
-        ansible.builtin.unarchive:
-          src: "{{ aap_setup_down_installer_file }}"
-          dest: "{{ containerized_installer_user_home }}"
-          owner: "{{ containerized_installer_user }}"
-          group: "{{ containerized_installer_user }}"
-          remote_src: true
+      - name: Install Red Hat COP AAP utilities collection
+        run: |
+          ansible-galaxy collection install git+https://github.com/redhat-cop/aap_utilities.git,9f682d5774ce4e6ee1133246c447bb933ec5c218
+
+      - name: Download AAP setup bundle using Red Hat COP utilities
+        run: ansible-playbook download-aap-setup.yml -e "aap_setup_download_url=${{ secrets.TARBALL }}" -e "aap_setup_dest_directory=/__w/redhat-image-mode-aap/redhat-image-mode-aap" -e "aap_setup_bundle_name=ansible-automation-platform-containerized-setup-2.5-16.tar.gz"
 
       # workaround for https://github.com/redhat-actions/podman-login/issues/42 since the docker config from the host doesn't come up to the container
       - name: Workaround open podman-login action issue
@@ -104,7 +89,7 @@ jobs:
           image: ${{ env.DEST_IMAGE }}
           tags: ${{ env.TAGLIST }}
           containerfiles: ${{ env.CONTAINERFILE }}
-          build_args: |
+          build-args: |
             ANSIBLE_USER_PASS=${{ secrets.ANSIBLE_USER_PASS }}
 
       - name: Log in to the GitHub Container registry
