@@ -57,7 +57,7 @@ jobs:
         run: subscription-manager register --username="${{ secrets.RHT_USER }}" --password="${{ secrets.RHT_PASS }}" 
 
       - name: Add appstream repo
-        run: subscription-manager repos --enable ansible-automation-platform-2.5-for-rhel-8-x86_64-rpms
+        run: subscription-manager repos --enable ansible-automation-platform-2.5-for-rhel-9-x86_64-rpms
 
       - name: Get container tools and ansible in UBI builder
         run: dnf -y install podman buildah skopeo wget ansible-core 
