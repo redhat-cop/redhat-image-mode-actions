@@ -56,7 +56,10 @@ jobs:
       - name: Access a subscription via activation key
         run: subscription-manager register --username="${{ secrets.RHT_USER }}" --password="${{ secrets.RHT_PASS }}" 
 
-      - name: Get container tools in UBI builder
+      - name: Add appstream repo
+        run: dnf config-manager --add-repo rhel-9-for-x86_64-appstream-rpms 
+
+      - name: Get container tools and ansiblein UBI builder
         run: dnf -y install podman buildah skopeo wget ansible-core 
 
       - name: Install Red Hat COP AAP utilities collection
