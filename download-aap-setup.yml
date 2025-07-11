@@ -4,7 +4,7 @@
   connection: local
   gather_facts: false
   vars:
-    containerized_installer_version: "2.5"
+    containerized_installer_version: "latest"
     containerized_installer_user: 'aap'
     containerized_installer_user_home: '/var/lib/{{ containerized_installer_user }}'
     containerized_installer_cleanup: true
