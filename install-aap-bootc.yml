@@ -15,11 +15,6 @@
           - "OS Family: {{ ansible_os_family }}"
           - "Architecture: {{ ansible_architecture }}"
           - "Total Memory: {{ ansible_memtotal_mb }}MB"
-          
-    - name: Ensure hostname is properly set
-      ansible.builtin.hostname:
-        name: aap-aio.local
-        use: systemd
       
     - name: Verify AAP installer bundle is extracted
       ansible.builtin.stat:
