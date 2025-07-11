@@ -21,7 +21,7 @@ jobs:
       #RHT_ACT_KEY: "${{ secrets.RHT_ACT_KEY }}"
       
       # Source registry for base image
-      #SOURCE_REGISTRY_HOST: "registry.redhat.io"
+      SOURCE_REGISTRY_HOST: "registry.redhat.io"
       # Source credentials - uses repository secrets
       #SOURCE_REGISTRY_USER: "${{ secrets.SOURCE_REGISTRY_USER }}"
       #SOURCE_REGISTRY_PASSWORD: "${{ secrets.SOURCE_REGISTRY_PASSWORD }}"
