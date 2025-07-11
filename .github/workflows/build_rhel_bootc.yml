@@ -67,7 +67,7 @@ jobs:
           ansible-galaxy collection install git+https://github.com/redhat-cop/aap_utilities.git,9f682d5774ce4e6ee1133246c447bb933ec5c218
 
       - name: Download AAP setup bundle using Red Hat COP utilities
-        run: ansible-playbook download-aap-setup.yml -e "RHT_ACT_KEY="${{ secrets.RHT_ACT_KEY }}" -e "aap_setup_dest_directory=/__w/redhat-image-mode-aap/redhat-image-mode-aap"
+        run: ansible-playbook download-aap-setup.yml -e "RHT_TOKEN=${{ secrets.RHT_TOKEN }}" -e "aap_setup_dest_directory=/__w/redhat-image-mode-aap/redhat-image-mode-aap"
 
       # workaround for https://github.com/redhat-actions/podman-login/issues/42 since the docker config from the host doesn't come up to the container
       - name: Workaround open podman-login action issue
