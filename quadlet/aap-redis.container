@@ -1,0 +1,20 @@
+[Unit]
+Description=Redis Cache for AAP
+Before=aap-controller.service aap-hub.service aap-eda-controller.service
+
+[Container]
+Image=registry.redhat.io/rhel9/redis-6:latest
+ContainerName=aap-redis
+Network=aap-network
+PublishPort=6379:6379
+Volume=aap-redis-data:/var/lib/redis/data:Z
+Volume=aap-redis-conf:/etc/redis:Z
+User=999:999
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target 

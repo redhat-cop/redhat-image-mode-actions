@@ -1,0 +1,27 @@
+[Unit]
+Description=Ansible Automation Platform Hub
+After=aap-postgresql.service aap-redis.service
+Wants=aap-postgresql.service aap-redis.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/hub-rhel8:latest
+ContainerName=aap-hub
+Network=aap-network
+PublishPort=5001:5001
+Environment=DATABASE_HOST=aap-postgresql
+Environment=DATABASE_NAME=aaphub
+Environment=DATABASE_USER=postgres
+Environment=DATABASE_PASSWORD=redhat
+Environment=REDIS_HOST=aap-redis
+Environment=REDIS_PORT=6379
+Volume=aap-hub-data:/var/lib/pulp:Z
+Volume=aap-hub-storage:/var/lib/pulp/artifact:Z
+Volume=aap-hub-logs:/var/log/galaxy_ng:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target 

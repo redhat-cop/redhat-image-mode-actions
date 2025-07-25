@@ -1,0 +1,22 @@
+[Unit]
+Description=Ansible Automation Platform Gateway Proxy
+After=aap-gateway.service
+Wants=aap-gateway.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/gateway-proxy-rhel8:latest
+ContainerName=aap-gateway-proxy
+Network=aap-network
+PublishPort=8081:8081
+Environment=GATEWAY_HOST=aap-gateway
+Environment=GATEWAY_PORT=80
+Volume=aap-gateway-proxy-data:/var/lib/proxy:Z
+Volume=aap-gateway-proxy-logs:/var/log/proxy:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 

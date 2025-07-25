@@ -1,0 +1,20 @@
+[Unit]
+Description=Ansible Automation Platform Hub Web Interface
+After=aap-hub.service
+Wants=aap-hub.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/hub-web-rhel8:latest
+ContainerName=aap-hub-web
+Network=aap-network
+PublishPort=8002:8002
+Environment=HUB_API_BASE_URL=http://aap-hub:5001
+Volume=aap-hub-web-data:/var/lib/hub-web:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 

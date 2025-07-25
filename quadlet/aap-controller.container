@@ -1,0 +1,29 @@
+[Unit]
+Description=Ansible Automation Platform Controller
+After=aap-postgresql.service aap-redis.service
+Wants=aap-postgresql.service aap-redis.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/controller-rhel8:latest
+ContainerName=aap-controller
+Network=aap-network
+PublishPort=8080:8080
+PublishPort=8443:8443
+Environment=DATABASE_HOST=aap-postgresql
+Environment=DATABASE_NAME=aapcontroller
+Environment=DATABASE_USER=postgres
+Environment=DATABASE_PASSWORD=redhat
+Environment=REDIS_HOST=aap-redis
+Environment=REDIS_PORT=6379
+Volume=aap-controller-data:/var/lib/awx:Z
+Volume=aap-controller-projects:/var/lib/awx/projects:Z
+Volume=aap-controller-logs:/var/log/tower:Z
+User=1000:1000
+Exec=/usr/bin/launch_awx.sh
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target 

@@ -1,0 +1,24 @@
+[Unit]
+Description=Performance Co-Pilot for AAP Monitoring
+After=aap-controller.service aap-hub.service aap-eda-controller.service
+
+[Container]
+Image=registry.redhat.io/rhel9/pcp:latest
+ContainerName=aap-pcp
+Network=aap-network
+PublishPort=44321:44321
+Environment=PCP_HOSTNAME=aap-aio.local
+Volume=aap-pcp-data:/var/lib/pcp:Z
+Volume=aap-pcp-logs:/var/log/pcp:Z
+Volume=/sys/fs/cgroup:/sys/fs/cgroup:ro
+Volume=/proc:/host/proc:ro
+Volume=/sys:/host/sys:ro
+Privileged=true
+User=0:0
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 

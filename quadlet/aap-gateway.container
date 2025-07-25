@@ -1,0 +1,27 @@
+[Unit]
+Description=Ansible Automation Platform Gateway
+After=aap-controller.service aap-hub.service aap-eda-controller.service
+Wants=aap-controller.service aap-hub.service aap-eda-controller.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/gateway-rhel8:latest
+ContainerName=aap-gateway
+Network=aap-network
+PublishPort=80:80
+PublishPort=443:443
+Environment=CONTROLLER_HOST=aap-controller
+Environment=CONTROLLER_PORT=8080
+Environment=HUB_HOST=aap-hub
+Environment=HUB_PORT=5001
+Environment=EDA_HOST=aap-eda-controller
+Environment=EDA_PORT=5000
+Volume=aap-gateway-data:/var/lib/gateway:Z
+Volume=aap-gateway-logs:/var/log/gateway:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 

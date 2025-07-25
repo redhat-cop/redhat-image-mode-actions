@@ -1,0 +1,26 @@
+[Unit]
+Description=Ansible Automation Platform Event-Driven Automation Controller
+After=aap-postgresql.service aap-redis.service
+Wants=aap-postgresql.service aap-redis.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest
+ContainerName=aap-eda-controller
+Network=aap-network
+PublishPort=5000:5000
+Environment=DATABASE_HOST=aap-postgresql
+Environment=DATABASE_NAME=aapeda
+Environment=DATABASE_USER=postgres
+Environment=DATABASE_PASSWORD=redhat
+Environment=REDIS_HOST=aap-redis
+Environment=REDIS_PORT=6379
+Volume=aap-eda-data:/var/lib/eda:Z
+Volume=aap-eda-logs:/var/log/eda:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 

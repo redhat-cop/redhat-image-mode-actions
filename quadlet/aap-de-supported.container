@@ -1,0 +1,22 @@
+[Unit]
+Description=Ansible Automation Platform Decision Environment
+After=aap-eda-controller.service
+Wants=aap-eda-controller.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/de-supported-rhel8:latest
+ContainerName=aap-de-supported
+Network=aap-network
+Environment=EDA_HOST=aap-eda-controller
+Environment=EDA_PORT=5000
+Volume=aap-de-supported-data:/var/lib/eda:Z
+Volume=aap-de-supported-tmp:/tmp:Z
+User=1000:1000
+AutoUpdate=registry
+
+[Service]
+Restart=no
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target 

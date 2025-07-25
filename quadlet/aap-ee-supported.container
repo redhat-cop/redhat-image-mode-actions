@@ -1,0 +1,22 @@
+[Unit]
+Description=Ansible Automation Platform Supported Execution Environment
+After=aap-controller.service
+Wants=aap-controller.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:latest
+ContainerName=aap-ee-supported
+Network=aap-network
+Environment=CONTROLLER_HOST=aap-controller
+Environment=CONTROLLER_PORT=8080
+Volume=aap-ee-supported-data:/var/lib/awx:Z
+Volume=aap-ee-supported-tmp:/tmp:Z
+User=1000:1000
+AutoUpdate=registry
+
+[Service]
+Restart=no
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target 

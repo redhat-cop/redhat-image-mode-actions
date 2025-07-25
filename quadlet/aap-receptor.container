@@ -1,0 +1,22 @@
+[Unit]
+Description=Ansible Automation Platform Receptor
+After=aap-controller.service
+Wants=aap-controller.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/receptor-rhel8:latest
+ContainerName=aap-receptor
+Network=aap-network
+PublishPort=27199:27199
+Environment=CONTROLLER_HOST=aap-controller
+Environment=CONTROLLER_PORT=8080
+Volume=aap-receptor-data:/var/lib/receptor:Z
+Volume=aap-receptor-logs:/var/log/receptor:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 

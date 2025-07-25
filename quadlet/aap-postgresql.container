@@ -1,0 +1,24 @@
+[Unit]
+Description=PostgreSQL Database for AAP
+Before=aap-controller.service aap-hub.service aap-eda-controller.service
+
+[Container]
+Image=registry.redhat.io/rhel9/postgresql-15:latest
+ContainerName=aap-postgresql
+Network=aap-network
+PublishPort=5432:5432
+Environment=POSTGRESQL_USER=postgres
+Environment=POSTGRESQL_PASSWORD=redhat
+Environment=POSTGRESQL_DATABASE=postgres
+Environment=POSTGRESQL_ADMIN_PASSWORD=redhat
+Volume=aap-postgresql-data:/var/lib/pgsql/data:Z
+Volume=aap-postgresql-backup:/var/backups/postgresql:Z
+User=26:26
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target 

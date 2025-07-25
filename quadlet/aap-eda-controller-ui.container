@@ -1,0 +1,20 @@
+[Unit]
+Description=Ansible Automation Platform Event-Driven Automation Controller UI
+After=aap-eda-controller.service
+Wants=aap-eda-controller.service
+
+[Container]
+Image=registry.redhat.io/ansible-automation-platform-25/eda-controller-ui-rhel8:latest
+ContainerName=aap-eda-controller-ui
+Network=aap-network
+PublishPort=3000:3000
+Environment=EDA_API_BASE_URL=http://aap-eda-controller:5000
+Volume=aap-eda-ui-data:/var/lib/eda-ui:Z
+User=1000:1000
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target 
