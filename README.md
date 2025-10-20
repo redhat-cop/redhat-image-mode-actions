@@ -27,7 +27,7 @@ For RHEL, this template uses an *activation key* to get access to a subscription
 
 ## Accessing a subscription during build
 
-To use packages from the RHEL repositories, the GHA runner will need to have subscription information available. This workflow will register the build container, execute the build, and then unregister as a final step. You will only be using the subscription for the duration of the build. To use `subscription-manager` in a pipieline like this, it's easiest to use an activation key. If you don't have a subscription already, the [No-cost RHEL for developers subscription](https://developers.redhat.com/products/rhel/download) is a good option.
+To use packages from the RHEL repositories, the GHA runner will need to have subscription information available. This workflow will register the build container, execute the build, and then unregister as a final step. You will only be using the subscription for the duration of the build. To use `subscription-manager` in a pipeline like this, it's easiest to use an activation key. If you don't have a subscription already, the [No-cost RHEL for developers subscription](https://developers.redhat.com/products/rhel/download) is a good option.
 
 If you aren't familiar with activation keys, from the docs:
 > An activation key is a preshared authentication token that enables authorized users to register and auto-configure systems. Running a registration command with an activation key and organization  ID combination, instead of a username and password combination, increases security and facilitates automation.
