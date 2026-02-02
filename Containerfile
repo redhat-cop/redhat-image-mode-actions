@@ -1,6 +1,6 @@
-MAINTAINER Alessandro Rossi <al.rossi87@gmail.com>
-
 FROM registry.redhat.io/rhel9/rhel-bootc:9.6
+
+LABEL org.opencontainers.image.authors="Alessandro Rossi <al.rossi87@gmail.com>"
 
 #install software
 RUN dnf -y install tmux mkpasswd
